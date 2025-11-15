@@ -1,13 +1,15 @@
-import { Search, Heart, X } from 'lucide-react';
+import { Search, Heart, X, ShoppingBag } from 'lucide-react';
 import { useState } from 'react';
 
 interface HeaderProps {
   onCategoryChange: (category: string) => void;
   currentCategory: string;
   onSearch: (query: string) => void;
+  onCartOpen?: () => void;
+  cartCount?: number;
 }
 
-export default function Header({ onCategoryChange, currentCategory, onSearch }: HeaderProps) {
+export default function Header({ onCategoryChange, currentCategory, onSearch, onCartOpen, cartCount = 0 }: HeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -74,6 +76,17 @@ export default function Header({ onCategoryChange, currentCategory, onSearch }: 
             </button>
             <button className="p-2 hover:bg-gray-50 rounded-full transition-colors">
               <Heart className="w-5 h-5 text-gray-700" />
+            </button>
+            <button
+              onClick={onCartOpen}
+              className="relative p-2 hover:bg-gray-50 rounded-full transition-colors"
+            >
+              <ShoppingBag className="w-5 h-5 text-gray-700" />
+              {cartCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-red-600 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">
+                  {cartCount > 99 ? '99+' : cartCount}
+                </span>
+              )}
             </button>
           </div>
         </div>
