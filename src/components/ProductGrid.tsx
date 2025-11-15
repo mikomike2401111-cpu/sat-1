@@ -1,13 +1,15 @@
 import { useState, useEffect } from 'react';
 import { supabase, Product } from '../lib/supabase';
 import ProductCard from './ProductCard';
+import CategoryHero from './CategoryHero';
 
 interface ProductGridProps {
   category: string;
   searchQuery?: string;
+  onCartUpdate?: () => void;
 }
 
-export default function ProductGrid({ category, searchQuery }: ProductGridProps) {
+export default function ProductGrid({ category, searchQuery, onCartUpdate }: ProductGridProps) {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedSubcategory, setSelectedSubcategory] = useState<string>('all');
@@ -76,7 +78,11 @@ export default function ProductGrid({ category, searchQuery }: ProductGridProps)
   }
 
   return (
-    <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <>
+      {!searchQuery && category !== 'all' && (category === 'men' || category === 'women' || category === 'unisex') && (
+        <CategoryHero category={category as 'men' | 'women' | 'unisex'} />
+      )}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4">
         <div>
           <h2 className="text-3xl font-bold">
@@ -121,10 +127,11 @@ export default function ProductGrid({ category, searchQuery }: ProductGridProps)
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {filteredProducts.map((product) => (
-            <ProductCard key={product.id} product={product} />
+            <ProductCard key={product.id} product={product} onCartUpdate={onCartUpdate} />
           ))}
         </div>
       )}
     </section>
+    </>
   );
 }
